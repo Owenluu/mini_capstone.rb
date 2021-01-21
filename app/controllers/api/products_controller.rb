@@ -9,13 +9,13 @@ class Api::ProductsController < ApplicationController
       @products = @products.where("price < ?", 350)
     end
 
-    if params[:sort] == "price" && params[:sort_order] == "asc"
-      @products = products.where(price: :asc)
-    elsif params[:sort] == "price" && params[:sort_order] == "desc"
-      @products = products.where(price: :desc)
-    else
-      @products = @products.where(id: :asc)
-    end
+    # if params[:sort] == "price" && params[:sort_order] == "asc"
+    #   @products = products.where(price: :asc)
+    # elsif params[:sort] == "price" && params[:sort_order] == "desc"
+    #   @products = products.where(price: :desc)
+    # else
+    #   @products = @products.where(id: :asc)
+    # end
 
     render "index.json.jb"
   end

@@ -6,8 +6,6 @@ class Product < ApplicationRecord
   # validates :description, presence: true
   # validates :description, acceptance: { message: "length must be a minimum of 2 and a maximum of 500 characters"}
 
-  scope :title_search, ->(search_terms) { where("name ILIKE ?", "%#{params[:search]}%") }
-
   def is_discounted?
     price <= 350
   end
