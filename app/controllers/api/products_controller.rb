@@ -1,23 +1,25 @@
 class Api::ProductsController < ApplicationController
   def index
-    @products = Product.all
-    if params[:search]
-      @products = @products.where("title ILIKE ?", "%#{params[:search]}%")
-    end
-
-    if params[:discount] == "true"
-      @products = @products.where("price < ?", 350)
-    end
-
-    # if params[:sort] == "price" && params[:sort_order] == "asc"
-    #   @products = products.where(price: :asc)
-    # elsif params[:sort] == "price" && params[:sort_order] == "desc"
-    #   @products = products.where(price: :desc)
-    # else
-    #   @products = @products.where(id: :asc)
-    # end
-
+    @products = Product
+      .title_search(params[:search])
+      .discounted(params[:discount])
+      .sorted(params[:sort], params[:sort_order])
     render "index.json.jb"
+  end
+
+  def create
+    @products = Products.new(
+      name: params[:name],
+      price: params[:price],
+      description: params[:description],
+      supplier_id: params[:supplier_id],
+    )
+    if @product.save
+      Image.create(product_id: @product.id, url: params[:image_url])
+      render "show.json.jb"
+    else
+      render json: { errors: @products.errors.full_message }, status: 422
+    end
   end
 
   def show
@@ -25,37 +27,19 @@ class Api::ProductsController < ApplicationController
     render "show.json.jb"
   end
 
-  def create
-    @product = Product.new(
-      name: params[:name],
-      price: params[:price],
-      image_url: params[:image_url],
-      description: params[:description],
-    )
-    if @product.save
-      render "show.json.jb"
-    else
-      render json: { errors: @product.errors.full_messages }, status: 422
-    end
-  end
-
   def update
     @product = Product.find_by(id: params[:id])
     @product.name = params[:name] || @product.name
     @product.price = params[:price] || @product.price
-    @product.image_url = params[:image_url] || @product.image_url
     @product.description = params[:description] || @product.description
 
-    if @product.save
-      render "show.json.jb"
-    else
-      render json: { errors: @products.errors.full_messages }, status: 422
-    end
+    @product.save
+    render "show.json.jb"
   end
 
   def destroy
-    products = Product.find_by(id: params[:id])
-    products.destory
-    render json: { message: "Products sucessfully destroyed!" }
+    product = Product.find_by(id: params[:id])
+    product.destroy
+    render json: { message: "Products Sucessfully Destroyed!" }, status: 422
   end
 end

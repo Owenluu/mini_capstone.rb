@@ -1,13 +1,38 @@
 class Product < ApplicationRecord
+  validates :name, presence: true
+  validates :price, presence: true
+  validates :price, numericality: { greater_than: 0 }
+  validates :description, presence: true
+  validates :description, length: { in: 2..1000 }
 
-  # validates :name, presence: true
-  # validates :email, uniqueness: true
-  # validates :price, presence: mumericality: { greater_than: 0 }
-  # validates :description, presence: true
-  # validates :description, acceptance: { message: "length must be a minimum of 2 and a maximum of 500 characters"}
+  belongs_to :supplier
+
+  has_many :images
+
+  scope :title_search, ->(search_terms) do
+          if search_terms
+            where("name ILIKE ?", "%#{search_terms}%")
+          end
+        end
+
+  scope :discounted, ->(check_discount) do
+          if check_discount
+            where("price < ?", 10)
+          end
+        end
+
+  scope :sorted, ->(sort, sort_order) do
+          if sort == "price" && sort_order == "asc"
+            order(price: :asc)
+          elsif sort == "price" && sort_order == "desc"
+            order(price: :desc)
+          else
+            order(id: :asc)
+          end
+        end
 
   def is_discounted?
-    price <= 350
+    price <= 200
   end
 
   def tax
@@ -18,6 +43,5 @@ class Product < ApplicationRecord
     price + tax
   end
 
-  validates :name, presence: true
-  validates :email, uniqueness: true
+  belongs_to :supplier
 end
