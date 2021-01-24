@@ -1,10 +1,14 @@
 class Api::ProductsController < ApplicationController
   def index
-    @products = Product
-      .title_search(params[:search])
-      .discounted(params[:discount])
-      .sorted(params[:sort], params[:sort_order])
-    render "index.json.jb"
+    if current_user
+      @products = Product
+        .title_search(params[:search])
+        .discounted(params[:discount])
+        .sorted(params[:sort], params[:sort_order])
+      render "index.json.jb"
+    else
+      render json: []
+    end
   end
 
   def create
