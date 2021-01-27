@@ -12,12 +12,17 @@ class Api::ProductsController < ApplicationController
   end
 
   def create
-    @products = Products.new(
-      name: params[:name],
-      price: params[:price],
-      description: params[:description],
-      supplier_id: params[:supplier_id],
-    )
+    if current_user
+      @products = Products.new(
+        name: params[:name],
+        price: params[:price],
+        description: params[:description],
+        supplier_id: params[:supplier_id],
+      )
+    else
+      render json: [], status: :unauthorized
+    end
+
     if @product.save
       Image.create(product_id: @product.id, url: params[:image_url])
       render "show.json.jb"
