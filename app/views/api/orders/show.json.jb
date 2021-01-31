@@ -6,4 +6,12 @@
   subtotal: @order.subtotal,
   total: @order.total,
   tax: @order.tax,
+  # carted_products: @order.carted_products,
+  carted_products: @order.carted_products.map do |carted_product|
+    {
+      id: carted_product.id,
+      quantity: carted_product.quantity,
+      product: carted_product.product,
+    }
+  end,
 }
