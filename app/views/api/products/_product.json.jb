@@ -6,8 +6,9 @@
   total: product.total,
   discounted: product.is_discounted?,
   supplier: product.supplier,
-  images: product.images,
   description: product.description,
+  images: product.images,
+  primary_image_url: product.primary_image_url,
   formatted: {
     price: number_to_currency(product.price),
   },
