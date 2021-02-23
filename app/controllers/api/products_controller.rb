@@ -2,15 +2,15 @@ class Api::ProductsController < ApplicationController
   before_action :authenticate_admin, except: [:index, :show]
 
   def index
-    if current_user
-      @products = Product
-        .title_search(params[:search])
-        .discounted(params[:discount])
-        .sorted(params[:sort], params[:sort_order])
-      render "index.json.jb"
-    else
-      render json: []
-    end
+    # if current_user
+    @products = Product
+      .title_search(params[:search])
+      .discounted(params[:discount])
+      .sorted(params[:sort], params[:sort_order])
+    render "index.json.jb"
+    # else
+    #   render json: []
+    # end
   end
 
   def create
